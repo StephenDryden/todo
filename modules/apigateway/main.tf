@@ -43,28 +43,35 @@ resource "aws_apigatewayv2_integration" "lambda_integration" {
   payload_format_version = "2.0"
 }
 
-resource "aws_apigatewayv2_route" "get_items" {
+resource "aws_apigatewayv2_route" "get_todos" {
   api_id    = aws_apigatewayv2_api.main.id
   route_key = "GET /${var.table_name}"
 
   target = "integrations/${aws_apigatewayv2_integration.lambda_integration.id}"
 }
 
-resource "aws_apigatewayv2_route" "get_items_id" {
+resource "aws_apigatewayv2_route" "get_todos_id" {
   api_id    = aws_apigatewayv2_api.main.id
   route_key = "GET /${var.table_name}/{id}"
 
   target = "integrations/${aws_apigatewayv2_integration.lambda_integration.id}"
 }
 
-resource "aws_apigatewayv2_route" "put_items" {
+resource "aws_apigatewayv2_route" "put_todos" {
   api_id    = aws_apigatewayv2_api.main.id
-  route_key = "PUT /${var.table_name}"
+  route_key = "PUT /${var.table_name}/{id}"
 
   target = "integrations/${aws_apigatewayv2_integration.lambda_integration.id}"
 }
 
-resource "aws_apigatewayv2_route" "delete_items_id" {
+resource "aws_apigatewayv2_route" "post_todos" {
+  api_id    = aws_apigatewayv2_api.main.id
+  route_key = "POST /${var.table_name}"
+
+  target = "integrations/${aws_apigatewayv2_integration.lambda_integration.id}"
+}
+
+resource "aws_apigatewayv2_route" "delete_todos_id" {
   api_id    = aws_apigatewayv2_api.main.id
   route_key = "DELETE /${var.table_name}/{id}"
 
