@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 	"log"
+	"todo/todo"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
@@ -10,7 +11,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 )
 
-func getItem(ctx context.Context, id string) (*Todo, error) {
+func GetItem(ctx context.Context, id string) (*todo.Todo, error) {
 	key, err := attributevalue.Marshal(id)
 	if err != nil {
 		return nil, err
@@ -34,7 +35,7 @@ func getItem(ctx context.Context, id string) (*Todo, error) {
 		return nil, nil
 	}
 
-	todo := new(Todo)
+	todo := new(todo.Todo)
 	err = attributevalue.UnmarshalMap(result.Item, todo)
 	if err != nil {
 		return nil, err

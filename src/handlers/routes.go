@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"todo/db"
+	"todo/todo"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/go-playground/validator/v10"
@@ -13,47 +15,30 @@ import (
 
 var validate *validator.Validate = validator.New()
 
-func router(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	log.Printf("Received req %#v", req)
-
-	switch req.HTTPMethod {
-	case "GET":
-		return processGet(ctx, req)
-	case "POST":
-		return processPost(ctx, req)
-	case "DELETE":
-		return processDelete(ctx, req)
-	case "PUT":
-		return processPut(ctx, req)
-	default:
-		return clientError(http.StatusMethodNotAllowed)
-	}
-}
-
-func processGet(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+func ProcessGet(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	id, ok := req.PathParameters["id"]
 	if !ok {
-		return processGetTodos(ctx)
+		return ProcessGetTodos(ctx)
 	} else {
-		return processGetTodo(ctx, id)
+		return ProcessGetTodo(ctx, id)
 	}
 }
 
-func processGetTodo(ctx context.Context, id string) (events.APIGatewayProxyResponse, error) {
+func ProcessGetTodo(ctx context.Context, id string) (events.APIGatewayProxyResponse, error) {
 	log.Printf("Received GET todo request with id = %s", id)
 
-	todo, err := getItem(ctx, id)
+	todo, err := db.GetItem(ctx, id)
 	if err != nil {
-		return serverError(err)
+		return ServerError(err)
 	}
 
 	if todo == nil {
-		return clientError(http.StatusNotFound)
+		return ClientError(http.StatusNotFound)
 	}
 
 	json, err := json.Marshal(todo)
 	if err != nil {
-		return serverError(err)
+		return ServerError(err)
 	}
 	log.Printf("Successfully fetched todo item %s", json)
 
@@ -63,17 +48,17 @@ func processGetTodo(ctx context.Context, id string) (events.APIGatewayProxyRespo
 	}, nil
 }
 
-func processGetTodos(ctx context.Context) (events.APIGatewayProxyResponse, error) {
+func ProcessGetTodos(ctx context.Context) (events.APIGatewayProxyResponse, error) {
 	log.Print("Received GET todos request")
 
-	todos, err := listItems(ctx)
+	todos, err := db.ListItems(ctx)
 	if err != nil {
-		return serverError(err)
+		return ServerError(err)
 	}
 
 	json, err := json.Marshal(todos)
 	if err != nil {
-		return serverError(err)
+		return ServerError(err)
 	}
 	log.Printf("Successfully fetched todos: %s", json)
 
@@ -83,30 +68,30 @@ func processGetTodos(ctx context.Context) (events.APIGatewayProxyResponse, error
 	}, nil
 }
 
-func processPost(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	var createTodo CreateTodo
+func ProcessPost(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	var createTodo todo.CreateTodo
 	err := json.Unmarshal([]byte(req.Body), &createTodo)
 	if err != nil {
 		log.Printf("Can't unmarshal body: %v", err)
-		return clientError(http.StatusUnprocessableEntity)
+		return ClientError(http.StatusUnprocessableEntity)
 	}
 
 	err = validate.Struct(&createTodo)
 	if err != nil {
 		log.Printf("Invalid body: %v", err)
-		return clientError(http.StatusBadRequest)
+		return ClientError(http.StatusBadRequest)
 	}
 	log.Printf("Received POST request with item: %+v", createTodo)
 
-	res, err := insertItem(ctx, createTodo)
+	res, err := db.InsertItem(ctx, createTodo)
 	if err != nil {
-		return serverError(err)
+		return ServerError(err)
 	}
 	log.Printf("Inserted new todo: %+v", res)
 
 	json, err := json.Marshal(res)
 	if err != nil {
-		return serverError(err)
+		return ServerError(err)
 	}
 
 	return events.APIGatewayProxyResponse{
@@ -118,25 +103,25 @@ func processPost(ctx context.Context, req events.APIGatewayProxyRequest) (events
 	}, nil
 }
 
-func processDelete(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+func ProcessDelete(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	id, ok := req.PathParameters["id"]
 	if !ok {
-		return clientError(http.StatusBadRequest)
+		return ClientError(http.StatusBadRequest)
 	}
 	log.Printf("Received DELETE request with id = %s", id)
 
-	todo, err := deleteItem(ctx, id)
+	todo, err := db.DeleteItem(ctx, id)
 	if err != nil {
-		return serverError(err)
+		return ServerError(err)
 	}
 
 	if todo == nil {
-		return clientError(http.StatusNotFound)
+		return ClientError(http.StatusNotFound)
 	}
 
 	json, err := json.Marshal(todo)
 	if err != nil {
-		return serverError(err)
+		return ServerError(err)
 	}
 	log.Printf("Successfully deleted todo item %+v", todo)
 
@@ -146,40 +131,40 @@ func processDelete(ctx context.Context, req events.APIGatewayProxyRequest) (even
 	}, nil
 }
 
-func processPut(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+func ProcessPut(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	id, ok := req.PathParameters["id"]
 	if !ok {
-		return clientError(http.StatusBadRequest)
+		return ClientError(http.StatusBadRequest)
 	}
 
-	var updateTodo UpdateTodo
+	var updateTodo todo.UpdateTodo
 	err := json.Unmarshal([]byte(req.Body), &updateTodo)
 	if err != nil {
 		log.Printf("Can't unmarshal body: %v", err)
-		return clientError(http.StatusUnprocessableEntity)
+		return ClientError(http.StatusUnprocessableEntity)
 	}
 
 	err = validate.Struct(&updateTodo)
 	if err != nil {
 		log.Printf("Invalid body: %v", err)
-		return clientError(http.StatusBadRequest)
+		return ClientError(http.StatusBadRequest)
 	}
 	log.Printf("Received PUT request with item: %+v", updateTodo)
 
-	res, err := updateItem(ctx, id, updateTodo)
+	res, err := db.UpdateItem(ctx, id, updateTodo)
 	if err != nil {
-		return serverError(err)
+		return ServerError(err)
 	}
 
 	if res == nil {
-		return clientError(http.StatusNotFound)
+		return ClientError(http.StatusNotFound)
 	}
 
 	log.Printf("Updated todo: %+v", res)
 
 	json, err := json.Marshal(res)
 	if err != nil {
-		return serverError(err)
+		return ServerError(err)
 	}
 
 	return events.APIGatewayProxyResponse{
@@ -190,7 +175,7 @@ func processPut(ctx context.Context, req events.APIGatewayProxyRequest) (events.
 		},
 	}, nil
 }
-func clientError(status int) (events.APIGatewayProxyResponse, error) {
+func ClientError(status int) (events.APIGatewayProxyResponse, error) {
 
 	return events.APIGatewayProxyResponse{
 		Body:       http.StatusText(status),
@@ -198,7 +183,7 @@ func clientError(status int) (events.APIGatewayProxyResponse, error) {
 	}, nil
 }
 
-func serverError(err error) (events.APIGatewayProxyResponse, error) {
+func ServerError(err error) (events.APIGatewayProxyResponse, error) {
 	log.Println(err.Error())
 
 	return events.APIGatewayProxyResponse{

@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"todo/todo"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
@@ -9,8 +10,8 @@ import (
 	"github.com/google/uuid"
 )
 
-func insertItem(ctx context.Context, createTodo CreateTodo) (*Todo, error) {
-	todo := Todo{
+func InsertItem(ctx context.Context, createTodo todo.CreateTodo) (*todo.Todo, error) {
+	todo := todo.Todo{
 		Name:        createTodo.Name,
 		Description: createTodo.Description,
 		Status:      false,

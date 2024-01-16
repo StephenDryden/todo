@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"todo/todo"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
@@ -9,8 +10,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 )
 
-func listItems(ctx context.Context) ([]Todo, error) {
-	todos := make([]Todo, 0)
+func ListItems(ctx context.Context) ([]todo.Todo, error) {
+	todos := make([]todo.Todo, 0)
 	var token map[string]types.AttributeValue
 
 	for {
@@ -24,7 +25,7 @@ func listItems(ctx context.Context) ([]Todo, error) {
 			return nil, err
 		}
 
-		var fetchedTodos []Todo
+		var fetchedTodos []todo.Todo
 		err = attributevalue.UnmarshalListOfMaps(result.Items, &fetchedTodos)
 		if err != nil {
 			return nil, err
