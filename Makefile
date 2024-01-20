@@ -1,3 +1,3 @@
 .PHONY: build
 build:
-	GOARCH=amd64 GOOS=linux go build -o /src/bin/bootstrap ./src/cmd/main.go
+	cd src && GOARCH=amd64 GOOS=linux go build -o ./bin/bootstrap ./cmd/main.go
