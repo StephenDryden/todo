@@ -4,7 +4,7 @@ data "archive_file" "lambda" {
   output_path = "src/bin/bootstrap.zip"
 }
 
-resource "aws_lambda_function" "crud-function" {
+resource "aws_lambda_function" "todo" {
   filename      = "src/bin/bootstrap.zip"
   function_name = "${var.project_name}-function"
   role          = var.role_arn
@@ -16,9 +16,9 @@ resource "aws_lambda_function" "crud-function" {
 }
 
 output "invoke_arn" {
-  value = aws_lambda_function.crud-function.invoke_arn
+  value = aws_lambda_function.todo.invoke_arn
 }
 
 output "function_name" {
-  value = aws_lambda_function.crud-function.function_name
+  value = aws_lambda_function.todo.function_name
 }

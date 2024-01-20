@@ -15,6 +15,23 @@ import (
 
 var validate *validator.Validate = validator.New()
 
+func Router(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	log.Printf("Received req %#v", req)
+
+	switch req.HTTPMethod {
+	case "GET":
+		return ProcessGet(ctx, req)
+	case "POST":
+		return ProcessPost(ctx, req)
+	case "DELETE":
+		return ProcessDelete(ctx, req)
+	case "PUT":
+		return ProcessPut(ctx, req)
+	default:
+		return ClientError(http.StatusMethodNotAllowed)
+	}
+}
+
 func ProcessGet(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	id, ok := req.PathParameters["id"]
 	if !ok {

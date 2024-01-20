@@ -1,4 +1,4 @@
-resource "aws_dynamodb_table" "http-crud-tutorial-items" {
+resource "aws_dynamodb_table" "todo" {
   name             = "${var.table_name}"
   hash_key         = "id"
   billing_mode     = "PAY_PER_REQUEST"

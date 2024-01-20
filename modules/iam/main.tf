@@ -1,4 +1,4 @@
-data "aws_iam_policy_document" "crud-lambda-trust-policy-document" {
+data "aws_iam_policy_document" "lambda-trust" {
   statement {
     actions    = ["sts:AssumeRole"]
     effect     = "Allow"
@@ -9,7 +9,7 @@ data "aws_iam_policy_document" "crud-lambda-trust-policy-document" {
   }
 }
 
-data "aws_iam_policy_document" "crud-lambda-policy-document" {
+data "aws_iam_policy_document" "lambda" {
   statement {
     actions = [
         "logs:CreateLogGroup",
@@ -45,22 +45,22 @@ data "aws_iam_policy_document" "crud-lambda-policy-document" {
   }  
 }
 
-resource "aws_iam_policy" "crud-lambda-role-policy" {
+resource "aws_iam_policy" "lambda" {
   name   = "${var.project_name}-lambda-role-policy"
   path   = "/"
-  policy = data.aws_iam_policy_document.crud-lambda-policy-document.json
+  policy = data.aws_iam_policy_document.lambda.json
 }
 
-resource "aws_iam_role" "crud-lambda-role" {
+resource "aws_iam_role" "lambda" {
   name               = "${var.project_name}-lambda-role"
-  assume_role_policy = "${data.aws_iam_policy_document.crud-lambda-trust-policy-document.json}"
+  assume_role_policy = "${data.aws_iam_policy_document.lambda-trust.json}"
 }
 
-resource "aws_iam_role_policy_attachment" "crud-lambda-role-policy-attachment" {
-  role       = "${aws_iam_role.crud-lambda-role.name}"
-  policy_arn = aws_iam_policy.crud-lambda-role-policy.arn
+resource "aws_iam_role_policy_attachment" "lambda-attachment" {
+  role       = "${aws_iam_role.lambda.name}"
+  policy_arn = aws_iam_policy.lambda.arn
 }
 
 output "role_arn" {
-  value = aws_iam_role.crud-lambda-role.arn
+  value = aws_iam_role.lambda.arn
 }
