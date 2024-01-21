@@ -7,7 +7,7 @@ terraform {
   }
   backend "s3" {
     bucket         = "stephendryden-state-prd"
-    key            = "scrud-go.key"
+    key            = "todo.key"
     region         = "eu-west-2"
     dynamodb_table = "dynamodb-state-locking"
   }
