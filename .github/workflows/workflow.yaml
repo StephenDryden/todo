@@ -11,4 +11,4 @@ jobs:
   go-build:
     uses: StephenDryden/workflow/.github/workflows/go.yaml@main
   terraform-check-and-plan:
-    uses: StephenDryden/workflow/.github/workflows/workflow.yaml@main
+    uses: StephenDryden/workflow/.github/workflows/terraform-check-and-plan.yaml@main
