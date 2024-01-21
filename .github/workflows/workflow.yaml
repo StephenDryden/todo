@@ -1,4 +1,4 @@
-name: terraform check and plan
+name: Go build and Terraform Check and Plan
 
 on: [push]
 
