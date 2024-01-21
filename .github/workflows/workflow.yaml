@@ -8,5 +8,7 @@ permissions:
 
 # Use resusable workflow from another repo
 jobs:
+  go-build:
+    uses: StephenDryden/workflow/.github/workflows/go.yaml@main
   terraform-check-and-plan:
     uses: StephenDryden/workflow/.github/workflows/workflow.yaml@main
