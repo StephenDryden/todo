@@ -10,6 +10,8 @@ resource "aws_apigatewayv2_stage" "dev" {
   name        = "$default"
   auto_deploy = true
 
+
+
   access_log_settings {
     destination_arn = aws_cloudwatch_log_group.main_api_gw.arn
 
@@ -37,10 +39,8 @@ resource "aws_cloudwatch_log_group" "main_api_gw" {
 
 resource "aws_apigatewayv2_integration" "lambda_integration" {
   api_id = aws_apigatewayv2_api.main.id
-
   integration_type = "AWS_PROXY"
   integration_uri  = "${var.invoke_arn}"
-  payload_format_version = "2.0"
 }
 
 resource "aws_apigatewayv2_route" "get_todos" {
@@ -84,9 +84,5 @@ resource "aws_lambda_permission" "api_gw" {
   function_name = "${var.function_name}"
   principal     = "apigateway.amazonaws.com"
 
-  source_arn = "${aws_apigatewayv2_api.main.execution_arn}/*/*/${var.table_name}"
-}
-
-output "invoke_url" {
-  value = aws_apigatewayv2_stage.dev.invoke_url
+  source_arn = "${aws_apigatewayv2_api.main.execution_arn}/*/*"
 }
