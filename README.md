@@ -1,3 +1,5 @@
+[![Build and Deploy](https://github.com/StephenDryden/todo/actions/workflows/workflow.yaml/badge.svg)](https://github.com/StephenDryden/todo/actions/workflows/workflow.yaml)
+
 # todo WIP
 
 todo is a bare bones simple serverless todo list app built using dynamodb, lambda and api gateway, deployed via Terraform.
