@@ -1,14 +1,62 @@
-name: terraform check and plan
+name: Build and Deploy
 
-on: [push]
+on: [push, workflow_dispatch]
+
+env:
+  AWS_REGION: "eu-west-1"
+  AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
 
 permissions:
   id-token: write # This is required for requesting the JWT
   contents: read # This is required for actions/checkout
 
-# Use resusable workflow from another repo
 jobs:
-  go-build:
-    uses: StephenDryden/workflow/.github/workflows/go.yaml@main
-  terraform-check-and-plan:
-    uses: StephenDryden/workflow/.github/workflows/terraform-check-and-plan.yaml@main
+  build:
+    name: Go Build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        #go-version: ["1.19", "1.20", "1.21.x"]
+        go-version: ["1.21.x"]
+
+    steps:
+      - uses: hashicorp/setup-terraform@v2
+      - uses: actions/checkout@v4
+      - name: Setup Go ${{ matrix.go-version }}
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ matrix.go-version }}
+      # You can test your matrix by printing the current Go version
+      - name: Display Go version
+        run: cd src && go version
+
+      - name: Install Dependencies
+        run: cd src && go get -u -d ./...
+
+      - name: go build
+        run: cd src && GOARCH=amd64 GOOS=linux go build -o ./bin/bootstrap ./cmd/main.go\
+
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/github
+          role-session-name: github
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Terraform fmt
+        id: fmt
+        run: terraform fmt -check
+        continue-on-error: false
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color
+        continue-on-error: false
