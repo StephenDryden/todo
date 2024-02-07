@@ -1,4 +1,4 @@
-[![Build and Deploy](https://github.com/StephenDryden/todo/actions/workflows/workflow.yaml/badge.svg)](https://github.com/StephenDryden/todo/actions/workflows/workflow.yaml)
+[![Build Go and Deploy Terraform](https://github.com/StephenDryden/todo/actions/workflows/workflow.yaml/badge.svg)](https://github.com/StephenDryden/todo/actions/workflows/workflow.yaml)
 
 # todo WIP
 
