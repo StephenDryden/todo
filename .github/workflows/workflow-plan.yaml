@@ -9,3 +9,5 @@ permissions:
 jobs:
   build:
     uses: StephenDryden/workflow/.github/workflows/terraform-plan.yaml@main
+    secrets:
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
