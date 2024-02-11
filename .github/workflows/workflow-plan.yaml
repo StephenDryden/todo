@@ -1,6 +1,6 @@
 name: Terraform Destroy
 
-on: [workflow_call]
+on: [push, workflow_dispatch]
 
 permissions:
   id-token: write # This is required for requesting the JWT
@@ -8,4 +8,4 @@ permissions:
 
 jobs:
   build:
-    uses: StephenDryden/workflow/.github/workflows/terraform-destroy.yaml@main
+    uses: StephenDryden/workflow/.github/workflows/terraform-plan.yaml@main

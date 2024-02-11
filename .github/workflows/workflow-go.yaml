@@ -1,15 +1,11 @@
-name: Build and Deploy
+name: Build Go
 
 on: [push, workflow_dispatch]
-
-env:
-  AWS_REGION: "eu-west-1"
-  AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
 
 permissions:
   id-token: write # This is required for requesting the JWT
   contents: read # This is required for actions/checkout
 
 jobs:
-  build-goo:
+  build-go:
     uses: StephenDryden/workflow/.github/workflows/go.yaml@main
