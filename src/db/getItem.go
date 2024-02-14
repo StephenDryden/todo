@@ -11,6 +11,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 )
 
+// GetItem returns a todo item from dynamodb using a given id
 func GetItem(ctx context.Context, id string) (*todo.Todo, error) {
 	key, err := attributevalue.Marshal(id)
 	if err != nil {

@@ -10,6 +10,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 )
 
+// ListItems lists all todo items in dynamodb
 func ListItems(ctx context.Context) ([]todo.Todo, error) {
 	todos := make([]todo.Todo, 0)
 	var token map[string]types.AttributeValue

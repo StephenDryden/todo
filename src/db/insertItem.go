@@ -10,6 +10,8 @@ import (
 	"github.com/google/uuid"
 )
 
+// InsertItem adds a new todo item to dynamodb
+// that newly added item is returned
 func InsertItem(ctx context.Context, createTodo todo.CreateTodo) (*todo.Todo, error) {
 	todo := todo.Todo{
 		Name:        createTodo.Name,

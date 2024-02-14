@@ -10,7 +10,10 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 )
 
+// DeleteItem deletes a dymamodb table entry using a given id
+// and returns the deleted item
 func DeleteItem(ctx context.Context, id string) (*todo.Todo, error) {
+
 	key, err := attributevalue.Marshal(id)
 	if err != nil {
 		return nil, err

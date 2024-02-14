@@ -15,6 +15,8 @@ import (
 
 var validate *validator.Validate = validator.New()
 
+// Router is the entry point for the lambda that triggers the next input
+// depending on the HTTPMethod
 func Router(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	log.Printf("Received req %#v", req)
 
@@ -32,6 +34,7 @@ func Router(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIG
 	}
 }
 
+// ProcessGet returns all todos or multiple depending on whether an id was present in the request
 func ProcessGet(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	id, ok := req.PathParameters["id"]
 	if !ok {
@@ -41,6 +44,7 @@ func ProcessGet(ctx context.Context, req events.APIGatewayProxyRequest) (events.
 	}
 }
 
+// ProcessGet gets a todo item from dynamodo using a given id
 func ProcessGetTodo(ctx context.Context, id string) (events.APIGatewayProxyResponse, error) {
 	log.Printf("Received GET todo request with id = %s", id)
 
@@ -65,6 +69,7 @@ func ProcessGetTodo(ctx context.Context, id string) (events.APIGatewayProxyRespo
 	}, nil
 }
 
+// ProcessGetTodos gets all todo items from dynamodo
 func ProcessGetTodos(ctx context.Context) (events.APIGatewayProxyResponse, error) {
 	log.Print("Received GET todos request")
 
@@ -85,6 +90,7 @@ func ProcessGetTodos(ctx context.Context) (events.APIGatewayProxyResponse, error
 	}, nil
 }
 
+// ProcessPost creates a new todo item
 func ProcessPost(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	var createTodo todo.CreateTodo
 	err := json.Unmarshal([]byte(req.Body), &createTodo)
@@ -120,6 +126,7 @@ func ProcessPost(ctx context.Context, req events.APIGatewayProxyRequest) (events
 	}, nil
 }
 
+// ProcessDelete deletes a todo item
 func ProcessDelete(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	id, ok := req.PathParameters["id"]
 	if !ok {
@@ -148,6 +155,7 @@ func ProcessDelete(ctx context.Context, req events.APIGatewayProxyRequest) (even
 	}, nil
 }
 
+// ProcessPut updates a todo item
 func ProcessPut(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	id, ok := req.PathParameters["id"]
 	if !ok {
@@ -192,6 +200,7 @@ func ProcessPut(ctx context.Context, req events.APIGatewayProxyRequest) (events.
 		},
 	}, nil
 }
+
 func ClientError(status int) (events.APIGatewayProxyResponse, error) {
 
 	return events.APIGatewayProxyResponse{
