@@ -13,6 +13,8 @@ import (
 	"github.com/aws/smithy-go"
 )
 
+// UpdateItem updates an existing todo item in dynamodb using a given id
+// the updated item is returned
 func UpdateItem(ctx context.Context, id string, updateTodo todo.UpdateTodo) (*todo.Todo, error) {
 	key, err := attributevalue.Marshal(id)
 	if err != nil {
