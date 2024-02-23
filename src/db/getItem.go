@@ -3,12 +3,12 @@ package db
 import (
 	"context"
 	"log"
-	"todo/todo"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
+	"github.com/stephendryden/todo/todo"
 )
 
 // GetItem returns a todo item from dynamodb using a given id

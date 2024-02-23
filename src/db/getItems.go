@@ -2,16 +2,16 @@ package db
 
 import (
 	"context"
-	"todo/todo"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
+	"github.com/stephendryden/todo/todo"
 )
 
-// ListItems lists all todo items in dynamodb
-func ListItems(ctx context.Context) ([]todo.Todo, error) {
+// GetItems lists all todo items in dynamodb
+func GetItems(ctx context.Context) ([]todo.Todo, error) {
 	todos := make([]todo.Todo, 0)
 	var token map[string]types.AttributeValue
 
