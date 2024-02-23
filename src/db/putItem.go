@@ -3,7 +3,6 @@ package db
 import (
 	"context"
 	"errors"
-	"todo/todo"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
@@ -11,11 +10,12 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"github.com/aws/smithy-go"
+	"github.com/stephendryden/todo/todo"
 )
 
-// UpdateItem updates an existing todo item in dynamodb using a given id
+// PutItemItem updates an existing todo item in dynamodb using a given id
 // the updated item is returned
-func UpdateItem(ctx context.Context, id string, updateTodo todo.UpdateTodo) (*todo.Todo, error) {
+func PutItem(ctx context.Context, id string, updateTodo todo.UpdateTodo) (*todo.Todo, error) {
 	key, err := attributevalue.Marshal(id)
 	if err != nil {
 		return nil, err

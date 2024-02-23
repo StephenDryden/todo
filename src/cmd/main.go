@@ -1,9 +1,8 @@
 package main
 
 import (
-	"todo/handlers"
-
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/stephendryden/todo/handlers"
 )
 
 func main() {

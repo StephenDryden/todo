@@ -1,4 +1,4 @@
-module todo
+module github.com/stephendryden/todo
 
 go 1.21
 
