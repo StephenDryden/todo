@@ -1,4 +1,4 @@
-data "archive_file" "lambda" {
+resource "archive_file" "lambda" {
   type        = "zip"
   source_file = "src/bin/bootstrap"
   output_path = "src/bin/bootstrap.zip"
@@ -10,7 +10,7 @@ resource "aws_lambda_function" "todo" {
   role          = var.role_arn
   handler       = "Handler"
 
-  source_code_hash = data.archive_file.lambda.output_base64sha256
+  source_code_hash = resource.archive_file.lambda.output_base64sha256
 
   runtime = "provided.al2"
 }
