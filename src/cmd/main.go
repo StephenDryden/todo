@@ -1,12 +1,13 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net/http"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/stephendryden/todo/db"
 	"github.com/stephendryden/todo/handlers"
@@ -21,10 +22,12 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 
 	log.Printf("Received req %#v", request)
 
-	sdkConfig := aws.Config{
-		Region: "eu-west-1",
+	sdkConfig, err := config.LoadDefaultConfig(context.TODO())
+	if err != nil {
+		log.Fatal(err)
 	}
 
+	config.LoadDefaultConfig(context.TODO())
 	table := db.Table{
 		DynamoDbClient: dynamodb.NewFromConfig(sdkConfig),
 		Name:           "todo",
