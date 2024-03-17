@@ -22,3 +22,12 @@ func StubGetTodo(
 		Error: raiseErr,
 	}
 }
+
+func StubAddTodo(tableName string, item map[string]types.AttributeValue, raiseErr *testtools.StubError) testtools.Stub {
+	return testtools.Stub{
+		OperationName: "PutItem",
+		Input:         &dynamodb.PutItemInput{TableName: aws.String(tableName), Item: item},
+		Output:        &dynamodb.PutItemOutput{},
+		Error:         raiseErr,
+	}
+}

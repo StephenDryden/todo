@@ -16,6 +16,10 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.9.3 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sso v1.11.3 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sts v1.16.3 // indirect
+	github.com/go-playground/locales v0.14.1 // indirect
+	github.com/go-playground/universal-translator v0.18.1 // indirect
+	github.com/google/uuid v1.6.0 // indirect
+	github.com/leodido/go-urn v1.4.0 // indirect
 )
 
 require (
@@ -28,5 +32,6 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/internal/endpoint-discovery v1.9.4 // indirect
 	github.com/aws/smithy-go v1.20.1 // indirect
 	github.com/awsdocs/aws-doc-sdk-examples/gov2/testtools v0.0.0-20240308002722-2e55b2188dc7
+	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 )

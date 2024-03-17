@@ -54,3 +54,28 @@ func (table Table) GetTodos() ([]todo.Todo, error) {
 	}
 	return todos, err
 }
+
+func (table Table) AddTodo(newTodo todo.CreateTodo) (*dynamodb.PutItemOutput, error) {
+
+	todo := todo.Todo{
+		Id:          newTodo.NewId(),
+		Name:        newTodo.Name,
+		Description: newTodo.Description,
+		Done:        "false",
+	}
+
+	item, err := attributevalue.MarshalMap(todo)
+	if err != nil {
+		panic(err)
+	}
+
+	response, err := table.DynamoDbClient.PutItem(context.TODO(), &dynamodb.PutItemInput{
+		TableName: aws.String(table.Name), Item: item,
+	})
+
+	if err != nil {
+		log.Printf("Couldn't create todo. Here's why: %v\n", err)
+	}
+
+	return response, err
+}

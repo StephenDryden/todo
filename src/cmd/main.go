@@ -36,6 +36,8 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	switch request.HTTPMethod {
 	case "GET":
 		return handlers.GetItem(table, request)
+	case "PUT":
+		return handlers.AddItem(table, request)
 	default:
 		return handlers.ClientError(http.StatusMethodNotAllowed)
 	}

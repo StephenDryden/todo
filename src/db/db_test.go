@@ -4,6 +4,7 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/awsdocs/aws-doc-sdk-examples/gov2/testtools"
 	"github.com/stephendryden/todo/stubs"
@@ -43,5 +44,29 @@ func GetTodo(raiseErr *testtools.StubError, t *testing.T) {
 		}
 	}
 
+	testtools.ExitTest(stubber, t)
+}
+
+// Todo: fix tests
+func TestTableBasics_AddTodo(t *testing.T) {
+	t.Run("NoErrors", func(t *testing.T) { AddTodo(nil, t) })
+	t.Run("TestError", func(t *testing.T) { AddTodo(&testtools.StubError{Err: errors.New("TestError")}, t) })
+}
+
+func AddTodo(raiseErr *testtools.StubError, t *testing.T) {
+	stubber, table := enterTest()
+
+	todo := todo.CreateTodo{Name: "test todo", Description: "this is a test todo"}
+
+	item, marshErr := attributevalue.MarshalMap(todo)
+	if marshErr != nil {
+		panic(marshErr)
+	}
+
+	stubber.Add(stubs.StubAddTodo(table.Name, item, raiseErr))
+
+	_, err := table.AddTodo(todo)
+
+	testtools.VerifyError(err, raiseErr, t)
 	testtools.ExitTest(stubber, t)
 }
